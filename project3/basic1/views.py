@@ -32,3 +32,18 @@ def signUp(request):
 
 
 
+def login(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        try:
+            user = ccard_info.objects.get(username=username)
+            if check_password(password, user.password):
+                return JsonResponse({"status": "success", "message": "Login successful"})
+            else:
+                return JsonResponse({"status": "failed", "message": "Invalid credentials"})
+        except ccard_info.DoesNotExist:
+            return JsonResponse({"status": "failed", "message": "User does not exist"})
+
+    return JsonResponse({"status": "failed", "message": "Invalid request method"})
